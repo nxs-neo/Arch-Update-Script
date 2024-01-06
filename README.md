@@ -1,7 +1,7 @@
 # Arch-Update-Script
 simple shell script to update Pacman, Flatpak and AUR packages for Arch Based Distros.
 
-![alt text](https://imgur.com/a/t5QMRY4)
+![alt text](Screenshot.png)
 ## Installation:
 
 1.Download archUpdate.sh \
