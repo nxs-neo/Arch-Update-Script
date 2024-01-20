@@ -92,7 +92,7 @@ update () {
 				esac	
 
 				echo ""
-				echo "${R}Do you want to update __aur packages?${NORMAL}"
+				echo "${R}Do you want to update AUR packages?${NORMAL}"
 				read -r yn
 				case $yn in 
 					yes|Yes|YES|y|Y ) __aur "-a"; return;;
@@ -124,7 +124,7 @@ update () {
 				esac	
 
 				echo ""
-				echo "${R}Do you want to update __aur packages?${NORMAL}"
+				echo "${R}Do you want to update AUR packages?${NORMAL}"
 				read -r yn
 				case $yn in 
 					yes|Yes|YES|y|Y ) __aur "-ay"; return;;
