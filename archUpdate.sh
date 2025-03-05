@@ -11,12 +11,12 @@ __pcmn () {
 	echo
 	echo "${Y}Updating...${NORMAL}"
 	echo
-	if [ "$1" = "-ay" ]; 
-	then 
+	if [ "$1" = "-ay" ];
+	then
 		sudo pacman -Syu --noconfirm
 	fi
-	if [ "$1" = "-a" ]; 
-	then 
+	if [ "$1" = "-a" ];
+	then
 		sudo pacman -Syu
 	else
 		sudo pacman -Syu --noconfirm
@@ -31,11 +31,11 @@ __fltpk () {
 	echo "${B}Updating...${NORMAL}"
 	echo
 	if [ "$1" = "-ay" ];
-	then 
+	then
 		flatpak -y update
 	fi
 	if [ "$1" = "-a" ];
-	then 
+	then
 		flatpak update
 	else
 		flatpak -y update
@@ -47,26 +47,26 @@ __aur () {
 	echo
 	echo "${R}Updating...${NORMAL}"
 	echo
-	if [ "$1" = "-ay" ]; 
-	then 
-		yay -Syu --aur --noconfirm
+	if [ "$1" = "-ay" ];
+	then
+		aura -Syu --aur --noconfirm
 	fi
-	if [ "$1" = "-a" ]; 
-	then 
-		yay -Syu --aur 
+	if [ "$1" = "-a" ];
+	then
+		aura -Syu --aur
 	else
-		yay -Syu --aur --noconfirm
+		aura -Syu --aur --noconfirm
 	fi
 }
 
 update () {
-  
 
-	if [ -z "$1" ]; 
-	then 
+
+	if [ -z "$1" ];
+	then
 		__pcmn
 		__fltpk
-		__aur		
+		__aur
 	fi
 
 	while [ "$#" -gt 0 ]; do
@@ -85,21 +85,21 @@ update () {
 				echo ""
 				echo "${B}Do you want to update Flatpak packages?${NORMAL}"
 				read -r yn
-				case $yn in 
+				case $yn in
 					yes|Yes|YES|y|Y ) __fltpk "-a";;
 					no|NO|No|n|N ) ;;
 					* ) echo "${R}invalid response${NORMAL}" ;;
-				esac	
+				esac
 
 				echo ""
 				echo "${R}Do you want to update AUR packages?${NORMAL}"
 				read -r yn
-				case $yn in 
+				case $yn in
 					yes|Yes|YES|y|Y ) __aur "-a"; return;;
 					no|NO|No|n|N ) return;;
 					* ) echo "${R}invalid response${NORMAL}" ;;
 				esac
-				echo "${G}DONE!!${NORMAL}"		
+				echo "${G}DONE!!${NORMAL}"
 			;;
 
 
@@ -117,21 +117,21 @@ update () {
 				echo ""
 				echo "${B}Do you want to update Flatpak packages?${NORMAL}"
 				read -r yn
-				case $yn in 
+				case $yn in
 					yes|Yes|YES|y|Y ) __fltpk "-ay";;
 					no|NO|No|n|N ) ;;
 					* ) echo "${R}invalid response${NORMAL}" ;;
-				esac	
+				esac
 
 				echo ""
 				echo "${R}Do you want to update AUR packages?${NORMAL}"
 				read -r yn
-				case $yn in 
+				case $yn in
 					yes|Yes|YES|y|Y ) __aur "-ay"; return;;
 					no|NO|No|n|N ) return;;
 					* ) echo "${R}invalid response${NORMAL}" ;;
 				esac
-				echo "${G}DONE!!${NORMAL}"		
+				echo "${G}DONE!!${NORMAL}"
 			;;
 
 			-h|--help)
@@ -148,7 +148,7 @@ update () {
 				return
 			;;
 
-			-s|--shutdown) 
+			-s|--shutdown)
 				__pcmn
 				__fltpk
 				__aur
@@ -169,4 +169,3 @@ update () {
 		esac
 	done
 }
-
