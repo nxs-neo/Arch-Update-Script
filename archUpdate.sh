@@ -40,11 +40,11 @@ __aur() {
 	echo "${R}Updating Pacman and AUR...${NORMAL}"
 	echo
 	if [ "$1" = "-ay" ]; then
-		aura -Syu --noconfirm
+		yay -Syu --noconfirm
 	elif [ "$1" = "-a" ]; then
-		aura -Syu
+		yay -Syu
 	else
-		aura -Syu --noconfirm
+		yay -Syu --noconfirm
 	fi
 }
 
