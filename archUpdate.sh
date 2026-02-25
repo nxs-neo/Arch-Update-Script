@@ -1,67 +1,171 @@
-let R = (ansi red_bold)
-let G = (ansi green_bold)
-let B = (ansi blue_bold)
-let Y = (ansi yellow_bold)
-let N = (ansi reset)
-def __flatpak [ask?: bool] {
-	print ""
-  print $"($B)Updating Flatpak...($N)"
-	print ""
-  if $ask {
-    ^flatpak update
-  } else {
-    ^flatpak -y update
-  }
-}
-def __yay [ask?: bool] {
-	print ""
-  print $"($R)Updating Pacman and AUR...($N)"
-	print ""
-  if $ask {
-    ^yay -Syu --no-confirm
-  } else {
-    ^yay -Syu
-  }
+#!/bin/sh
+
+R='\033[1;4;31m'
+G='\033[1;4;32m'
+B='\033[1;4;34m'
+Y='\033[1;4;33m'
+NORMAL='\033[0m'
+
+__pip() {
+
+	echo
+	echo "${Y}Updating Python packages...${NORMAL}"
+	echo
+	if [ "$1" = "-ay" ]; then
+		pipx upgrade-all -q
+	elif [ "$1" = "-a" ]; then
+		pipx upgrade-all
+	else
+		pipx upgrade-all -q
+	fi
+
 }
 
-def update [
-  --ask(-a)
-  --yes(-y)
-  --shutdown(-s)
-  --reboot(-r)
-  --help
-] {
-  if $help {
-    print ""
-    print "Arch Update Script written by Neo"
-    print
-    print "OPTIONS: "
-    print "default behaviour: run updates for all package managers without asking"
-    print "-a or --ask : ask what package managers to update for. "
-    print "-h or --help : run this help dialogue"
-    print "-s or --shutdown : update and shutdown"
-    print "-r or --reboot or --restart : update and reboot"
-    print
-  }
+__fltpk() {
 
-  if (not $ask) and (not $yes) and (not $shutdown) and (not $reboot) {
-    __yay false
-    __flatpak false
-  }
-  if $ask {
-    if (input "Update AUR? (y/n): ") =~ '^(y|Y)' { __aur true }
-    if (input "Update Flatpak? (y/n): ") =~ '^(y|Y)' { __fltpk true }
-    if (input "Update pipx? (y/n): ") =~ '^(y|Y)' { __pip true }
-    print $"($G)DONE($N)"
-  }
-  if $shutdown {
-    __yay false
-    __flatpak false
-    ^shutdown now
-  }
-  if $reboot {
-    __yay false
-    __flatpak false
-    ^reboot
-  }
+	echo
+	echo "${B}Updating Flatpak...${NORMAL}"
+	echo
+	if [ "$1" = "-ay" ]; then
+		flatpak -y update
+	elif [ "$1" = "-a" ]; then
+		flatpak update
+	else
+		flatpak -y update
+	fi
+}
+__aur() {
+
+	echo
+	echo "${R}Updating Pacman and AUR...${NORMAL}"
+	echo
+	if [ "$1" = "-ay" ]; then
+		yay -Syu --noconfirm
+	elif [ "$1" = "-a" ]; then
+		yay -Syu
+	else
+		yay -Syu --noconfirm
+	fi
+}
+
+update() {
+
+	if [ -z "$1" ]; then
+		__aur
+		__fltpk
+		__pip
+	fi
+
+	while [ "$#" -gt 0 ]; do
+		case "$1" in
+		-a | --ask)
+			echo "${R}Do you want to update AUR packages?${NORMAL}"
+			read -r yn
+			case $yn in
+			yes | Yes | YES | y | Y)
+				__aur "-a"
+				return
+				;;
+			no | NO | No | n | N) return ;;
+			*) echo "${R}invalid response${NORMAL}" ;;
+			esac
+
+			echo ""
+			echo "${B}Do you want to update Flatpak packages?${NORMAL}"
+			read -r yn
+			case $yn in
+			yes | Yes | YES | y | Y) __fltpk "-a" ;;
+			no | NO | No | n | N) ;;
+			*) echo "${R}invalid response${NORMAL}" ;;
+			esac
+
+			echo ""
+			echo "${Y}Do you want to update Python packages?${NORMAL}"
+			read -r yn
+			case $yn in
+			yes | Yes | YES | y | Y) __pip "-a" ;;
+			no | NO | No | n | N) ;;
+			*) echo "${R}invalid response${NORMAL}" ;;
+			esac
+			echo "${R}Do you want to update AUR packages?${NORMAL}"
+			read -r yn
+			case $yn in
+			yes | Yes | YES | y | Y)
+				__aur "-ay"
+				return
+				;;
+			no | NO | No | n | N) return ;;
+			*) echo "${R}invalid response${NORMAL}" ;;
+			esac
+
+			echo "${G}DONE!!${NORMAL}"
+			;;
+
+		-ay)
+			echo "${R}Do you want to update AUR packages?${NORMAL}"
+			read -r yn
+			case $yn in
+			yes | Yes | YES | y | Y)
+				__aur "-ay"
+				return
+				;;
+			no | NO | No | n | N) return ;;
+			*) echo "${R}invalid response${NORMAL}" ;;
+			esac
+
+			echo ""
+			echo "${B}Do you want to update Flatpak packages?${NORMAL}"
+			read -r yn
+			case $yn in
+			yes | Yes | YES | y | Y) __fltpk "-ay" ;;
+			no | NO | No | n | N) ;;
+			*) echo "${R}invalid response${NORMAL}" ;;
+			esac
+
+			echo ""
+			echo "${Y}Do you want to update Python packages?${NORMAL}"
+			read -r yn
+			case $yn in
+			yes | Yes | YES | y | Y) __pip "-ay" ;;
+			no | NO | No | n | N) ;;
+			*) echo "${R}invalid response${NORMAL}" ;;
+			esac
+
+			echo "${G}DONE!!${NORMAL}"
+			;;
+
+		-h | --help)
+			echo ""
+			echo "Arch Update Script written by Neo"
+			echo
+			echo "OPTIONS: "
+			echo "default behaviour: run updates for all package managers without asking"
+			echo "-a or --ask : ask what package managers to update for. "
+			echo "-h or --help : run this help dialogue"
+			echo "-s or --shutdown : update and shutdown"
+			echo "-r or --reboot or --restart : update and reboot"
+			echo
+			return
+			;;
+
+		-s | --shutdown)
+			__pip
+			__fltpk
+			__aur
+			shutdown now
+			;;
+
+		-r | --reboot | --restart)
+			__pip
+			__fltpk
+			__aur
+			reboot
+			;;
+
+		*)
+			echo "Invalid Parameter"
+			return
+			;;
+		esac
+	done
 }
