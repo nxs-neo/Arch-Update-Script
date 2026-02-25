@@ -18,9 +18,9 @@ def __yay [ask?: bool] {
   print $"($R)Updating Pacman and AUR...($N)"
 	print ""
   if $ask {
-    ^yay -Syu --no-confirm
-  } else {
     ^yay -Syu
+  } else {
+    ^yay -Syu --noconfirm
   }
 }
 
