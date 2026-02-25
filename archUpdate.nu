@@ -49,9 +49,13 @@ def update [
     __flatpak false
   }
   if $ask {
-    if (input "Update AUR? (y/n): ") =~ '^(y|Y)' { __aur true }
-    if (input "Update Flatpak? (y/n): ") =~ '^(y|Y)' { __fltpk true }
-    if (input "Update pipx? (y/n): ") =~ '^(y|Y)' { __pip true }
+    if (input $"($R)Update Pacman? \(y/n\): ($N)") =~ '^(y|Y)' {
+      __yay true
+    }
+
+    if (input $"($B)Update Flatpak? \(y/n\): ($N)") =~ '^(y|Y)' {
+      __flatpak true
+    }
     print $"($G)DONE($N)"
   }
   if $shutdown {
